@@ -205,4 +205,13 @@ return
 #IfWinActive, Alloy Analyzer 5.1.0
 Tab::Send {Space}{Space}
 
+; Open current selected file in notepad
+#IfWinActive, ahk_class CabinetWClass
+>!o::
+	clipboard := ""
+	Send ^c
+	ClipWait, 2
+	Run, notepad.exe `"%clipboard%`"
+	return
+#IfWinActive
 
