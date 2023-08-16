@@ -17,11 +17,18 @@ ClipImageSave := new ClipImageSaver()
 #Include <FileCloner>
 FileClone := new FileCloner()
 
+; Groups are collections of window queries that you can operate on as a group,
+; IE show all of them, hide all of them, close the most recently active, etc.
+; READ MORE: TODO
+
 ; You can use the WindowSpy script to get the names and classes of programs
 ; WindowSpy comes with AutoHotKey
+
+GroupAdd("hh", "ahk_exe hh.exe ") ;ahk help
+
+; If you add multiple queries to a group, all queries that match any will be used
 GroupAdd("mail", "ahk_exe thunderbird.exe")
 GroupAdd("mail", "ahk_exe OUTLOOK.EXE")
-GroupAdd("hh", "ahk_exe hh.exe ") ;ahk help
 GroupAdd("firefox", "ahk_exe firefox.exe")
 GroupAdd("files", "ahk_class CabinetWClass")
 GroupAdd("zoom", "ahk_exe Zoom.exe")
@@ -41,23 +48,44 @@ GroupAdd("slides", "ahk_class AcrobatSDIWindow")
 GroupAdd("slides", "ahk_exe POWERPNT.EXE")
 
 GroupAdd("workshop", "ahk_exe firefox.exe")
-GroupAdd("workshop", "ahk_class AcrobatSDIWindow")
-GroupAdd("workshop", "ahk_class SunAwtFrame ") ; poor subsitute but works
 GroupAdd("workshop", "TLA+ Toolbox")
 GroupAdd("workshop", "ahk_exe Code.exe")
 GroupAdd("workshop", "ahk_class PodiumParent")
+
+; Switch to a window of whichever type.
+; IE right-alt+1 switches through firefox windows.
+; All of these use right-alt+char because consistency is cool
+
+; GroupActivate(name, "R") activates ONE window. Otherwise it activates them all.
+; READ MORE: TODO
+
+>!1:: GroupActivate("firefox", "R")
+>!2:: GroupActivate("editors", "R")
+>!e:: GroupActivate("mail", "R")
+>!h:: GroupActivate("hh", "R")
+>!p:: GroupActivate("slides", "R")
+>!f:: GroupActivate("files", "R")
+>!x:: GroupActivate("terminal", "R")
+>!c:: GroupActivate("editors", "R")
+>!z:: GroupActivate("zoom", "R")
+>!a:: GroupActivate("alloy", "R")
+
 
 ; globals are ok if you're not sharing the file with anyone else
 g_mode := ""
 
 
-#Include Hotstrings.ahk
-#Include <HotStringAdder>
-#Include <FirefoxStuff>
+#Include Hotstrings.ahk ; Replace what you type with something else.
 
-#Include <ModesModal>
-#Include <CharScripts>
-#Include <FileMode>
+; NEWB CUTOFF
+; If you copy just the above stuff and the hotstrings.ahk file, you'll have enough to get started with AHK.
+
+#Include <HotStringAdder> ; Easily add new hotstrings
+#Include <FirefoxStuff> ; Special commands for just firefox.
+
+#Include <ModesModal> ; Add ahk modes (a la vim) to your whole computing experience
+#Include <CharScripts> ; subscripts and superscripts
+#Include <FileMode> ; Open specific folders from anywhere with just your keyboard
 
 ; Some notes on hotkey modifier symbols
 ; # = Winkey
@@ -70,7 +98,7 @@ g_mode := ""
 
 ; !!! IMPORTANT !!!
 ; These let you update and reload your config on the fly
-; They are super, SUPER IMPORTANT
+; They are super, SUPER USEFUL
 ; (They also only work if you're running an .ahk file, not a compiled .exe)
 #!.::Reload
 #!,::Edit
@@ -84,7 +112,6 @@ g_mode := ""
   ClipWait 2 ; Wait until there's non-empty data on the clipboard
   A_clipboard := "[" . A_clipboard . "](" . ctmp . ")"
 }
-
 
 
 
@@ -112,56 +139,26 @@ toggle_app(app, location)
 
 #Include <LauncherMode>
 
+; These all are just win+key and may conflict with other program hotkeys. This is a bad idea,
+; don't do this.
+
 #=::Research.SetNoteType()
 #+::Research.AddNote()
-#D::Research.JotNote()
+#d::Research.JotNote()
 #?::Research.OpenNotes()
 
-
-; TODO make this its own file/function/whatever
-NumpadClear::
-	researchmap := {t: "therapy", d: "diary", l: "learn", r: "recs", m: "memo", s: "slush"}
-  ; Input is INCREDIBLY useful for making key combinations, like if you want
-  ; `a THEN b` to trigger a hotkey
-	Input, NewNoteType, L1 T1,, t,d,r,l,m,s
-	if (ErrorLevel = "Match") {
-		tmp_x := researchmap[NewNoteType]
-		Research.SetTo(tmp_x)
-		TrayTip,, Note type: %tmp_x%, 20, 17
-		SetTimer, RemoveTrayTip, -700
-	}
-return
-
-
+; These are win+ctrl+key, but the RIGHT ctrl, so won't conflict.
 #>^s::ClipImageSave.SaveClip()
 #>^+s::ClipImageSave.FastSaveClip()
 
 
-; This has to be a .lnk file because spotify is an app, not an .exe. It's weird.
->!s::toggle_app("ahk_exe Spotify.exe", "D:\Software\AutoHotKey\Lib\Spotify.lnk")
-
-; Switch to a window of whichever type.
-; IE right-alt+1 switches through firefox windows.
-; All of these use right-alt+char because consistency is cool
-
->!1:: GroupActivate("firefox", "R")
->!2:: GroupActivate("editors", "R")
->!e:: GroupActivate("mail", "R")
->!h:: GroupActivate("hh", "R")
->!p:: GroupActivate("slides", "R")
->!f:: GroupActivate("files", "R")
->!x:: GroupActivate("terminal", "R")
->!c:: GroupActivate("editors", "R")
->!z:: GroupActivate("zoom", "R")
->!a:: GroupActivate("alloy", "R")
->!.:: GroupActivate("workshop", "R")
  
 ; These hotkeys are only active if the condition is true
 ; In this case, we're in "workshop mode"
 #HotIf (g_mode = "workshop")
   ; I love using wheelleft and wheelright for hotkeys because almost no Software
   ; uses them, so they're "free"
-  WheelLeft:: GroupActivate("workshop", "R")
+  WheelLeft:: GroupActivate("editors", "R")
   WheelRight:: GroupActivate("zoom", "R")
 	
 	F4:: FileClone.Clone()
@@ -189,7 +186,8 @@ return
   }
 }
 
-; Alloy proper tab
+; The Alloy Analyzer is a homebrew IDE without a "tabs to spaces" option.
+; This is a hack to make the tab key send spaces. 
 #HotIf WinActive("Alloy Analyzer 6.1.0")
 Tab::Send {Space}{Space}
 

@@ -1,4 +1,5 @@
 ; Saves notes and bits of clipboard to a file.
+; Also a demo of how to write classes in AHK!
 
 class Researcher 
 {
