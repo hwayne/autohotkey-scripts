@@ -1,11 +1,10 @@
 ﻿
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Warn  ; Enable warnings to assist with detecting common errors.
 #SingleInstance Force ; No others
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-;SetMouseDelay, 100
-SetKeyDelay, 40
+#Requires AutoHotkey >=2.0
+SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
+SetKeyDelay 40 ; not actually used except when using SendRaw/Event
+SetMouseDelay 40
 SetTitleMatchMode RegEx
 
 ; Since AHK doesn't have modules, classes are a good way to contain state.
@@ -20,33 +19,37 @@ FileClone := new FileCloner()
 
 ; You can use the WindowSpy script to get the names and classes of programs
 ; WindowSpy comes with AutoHotKey
-GroupAdd, mail, ahk_exe thunderbird.exe
-GroupAdd, hh, ahk_exe hh.exe
-GroupAdd, firefox, ahk_exe firefox.exe 
-GroupAdd, files, ahk_class CabinetWClass
-GroupAdd, zoom, ahk_exe Zoom.exe
+GroupAdd("mail", "ahk_exe thunderbird.exe")
+GroupAdd("mail", "ahk_exe OUTLOOK.EXE")
+GroupAdd("hh", "ahk_exe hh.exe ") ;ahk help
+GroupAdd("firefox", "ahk_exe firefox.exe")
+GroupAdd("files", "ahk_class CabinetWClass")
+GroupAdd("zoom", "ahk_exe Zoom.exe")
+GroupAdd("zoom", "ahk_exe Teams.exe")
 GroupAdd, alloy, ahk_class SunAwtFrame ; poor subsitute but works
 
-GroupAdd, editors, ahk_exe Code.exe
-GroupAdd, editors, ahk_exe nvim-qt.exe
+GroupAdd("alloy", "ahk_class SunAwtFrame ") ; poor subsitute but works
 
-GroupAdd, terminal, ahk_exe WindowsTerminal.exe
-GroupAdd, terminal, ahk_exe powershell.exe
-GroupAdd, terminal, ahk_exe powershell_ise.exe
+GroupAdd("editors", "ahk_exe Code.exe")
+GroupAdd("editors", "ahk_exe nvim-qt.exe")
 
-GroupAdd, slides, ahk_class AcrobatSDIWindow
-GroupAdd, slides, ahk_exe POWERPNT.EXE
+GroupAdd("terminal", "ahk_exe WindowsTerminal.exe")
+GroupAdd("terminal", "ahk_exe powershell.exe")
+GroupAdd("terminal", "ahk_exe powershell_ise.exe")
 
-GroupAdd, workshop, ahk_exe firefox.exe 
-GroupAdd, workshop, ahk_class AcrobatSDIWindow
-GroupAdd, workshop, ahk_class SunAwtFrame ; poor subsitute but works
-GroupAdd, workshop, TLA\+ Toolbox
+GroupAdd("slides", "ahk_class AcrobatSDIWindow")
+GroupAdd("slides", "ahk_exe POWERPNT.EXE")
 
-; Yay globals
+GroupAdd("workshop", "ahk_exe firefox.exe")
+GroupAdd("workshop", "ahk_class AcrobatSDIWindow")
+GroupAdd("workshop", "ahk_class SunAwtFrame ") ; poor subsitute but works
+GroupAdd("workshop", "TLA+ Toolbox")
+GroupAdd("workshop", "ahk_exe Code.exe")
+GroupAdd("workshop", "ahk_class PodiumParent")
+
+; globals are ok if you're not sharing the file with anyone else
 g_mode := ""
 
-
-Return ; END OF HEADERS
 
 #Include Hotstrings.ahk
 #Include <HotStringAdder>
@@ -74,30 +77,13 @@ Return ; END OF HEADERS
 
 ; Format copy as markdown link
 ; Unfortunately there's no way to get selected text without copying it to the clipboard
-#!c::
-	ctmp := clipboard
-	clipboard := ""
-	Send ^c
-	ClipWait, 2
-	clipboard := "[" . clipboard . "](" . ctmp . ")"
-Return
-
-; Same as above, but use title too
-; (I don't ever use this one)
->^>!c::
-	clipboard := ""
-	Send ^c
-	ClipWait, 2
-	ctmp := clipboard
-	Send ^l
-	Sleep, 400
-	clipboard := ""
-
-	Send ^c
-	ClipWait, 2
-	clipboard := "[" . ctmp . "](" . clipboard . ")"
-Return
-
+#!c:: {
+  ctmp := A_clipboard ; Save what's on the clipboard for later formatting
+  A_clipboard := ""
+  Send "^c"
+  ClipWait 2 ; Wait until there's non-empty data on the clipboard
+  A_clipboard := "[" . A_clipboard . "](" . ctmp . ")"
+}
 
 
 
@@ -154,64 +140,68 @@ return
 ; This has to be a .lnk file because spotify is an app, not an .exe. It's weird.
 >!s::toggle_app("ahk_exe Spotify.exe", "D:\Software\AutoHotKey\Lib\Spotify.lnk")
 
->!1:: GroupActivate, firefox, R
->!t:: toggle_app("TLA\+ Toolbox", "")
->!2:: GroupActivate, editors, R
+; Switch to a window of whichever type.
+; IE right-alt+1 switches through firefox windows.
+; All of these use right-alt+char because consistency is cool
 
->!e:: GroupActivate, mail, R
->!h:: GroupActivate, hh, R
->!p:: GroupActivate, slides, R
->!f:: GroupActivate, files, R
->!x:: GroupActivate, terminal, R
->!c:: GroupActivate, editors, R
->!z:: GroupActivate, zoom, R
->!a:: GroupActivate, alloy, R
->!.:: GroupActivate, workshop, R
+>!1:: GroupActivate("firefox", "R")
+>!2:: GroupActivate("editors", "R")
+>!e:: GroupActivate("mail", "R")
+>!h:: GroupActivate("hh", "R")
+>!p:: GroupActivate("slides", "R")
+>!f:: GroupActivate("files", "R")
+>!x:: GroupActivate("terminal", "R")
+>!c:: GroupActivate("editors", "R")
+>!z:: GroupActivate("zoom", "R")
+>!a:: GroupActivate("alloy", "R")
+>!.:: GroupActivate("workshop", "R")
  
-#If (g_mode = "workshop") 
-	F1:: GroupActivate, workshop, R
-	F2:: GroupActivate, zoom, R
+; These hotkeys are only active if the condition is true
+; In this case, we're in "workshop mode"
+#HotIf (g_mode = "workshop")
+  ; I love using wheelleft and wheelright for hotkeys because almost no Software
+  ; uses them, so they're "free"
+  WheelLeft:: GroupActivate("workshop", "R")
+  WheelRight:: GroupActivate("zoom", "R")
 	
 	F4:: FileClone.Clone()
-#If
+#HotIf
 
+
+; Makes a tooltip with the current time.
+; >^>+d --> right-ctrl + right-shift + d 
 >^>+d::
-FormatTime, TimeString,, MM/dd hh:mm tt
-;TrayTip ,, %TimeString%, 1, ; too long
-Tooltip %TimeString%
-SetTimer, RemoveToolTip, -700
-return
-
-RemoveToolTip:
-ToolTip
-return
-
-RemoveTrayTip:
-TrayTip
-return
+{
+  Tooltip(FormatTime(,"MM/dd hh:mm tt"))
+  ; Tooltip() closes any existing tooltip
+  SetTimer(() => ToolTip(), -700) ;-700 = in 700 ms, run ONCE
+}
 
 
 ; Timestamp tracking
 >^d::
-FormatTime, TimeString,, MM/dd hh:mm tt
-InputBox, t_msg, Timestamp,,,200,100,,,,,
-if !ErrorLevel { ;ErrorLevel is 0 if ok, nonzero if cancel
-	timestampfile := A_WorkingDir . "\Config\timestamps.txt"
-	FileAppend, %TimeString%	%t_msg%`r`n, %timestampfile%
+{
+  TimeString := FormatTime(,"MM/dd hh:mm tt")
+  t_msg := InputBox(,TimeString,"w200 h100")
+  if t_msg.Result = "OK" {
+    timestampfile := A_WorkingDir . "\Config\timestamps.txt"
+    FileAppend(TimeString . "`t" . t_msg.Value . "`r`n", timestampfile)
+  }
 }
-return
 
 ; Alloy proper tab
-#IfWinActive, Alloy Analyzer 5.1.0
+#HotIf WinActive("Alloy Analyzer 6.1.0")
 Tab::Send {Space}{Space}
 
-; Open current selected file in notepad
-#IfWinActive, ahk_class CabinetWClass
->!o::
-	clipboard := ""
-	Send ^c
-	ClipWait, 2
-	Run, notepad.exe `"%clipboard%`"
-	return
-#IfWinActive
+; We don't need a closing #HotIf because the following #HotIf automagically ends the old one
 
+; Open current selected file in notepad
+#HotIf WinActive("ahk_class CabinetWClass")
+>!o::{
+  A_clipboard := ""
+  Send "^c"
+  ClipWait 2
+  Run(Format("notepad.exe `"{1}`"", A_clipboard)) ; This doesn't handle spaces in filenames and I don't yet know why 
+}
+
+#HotIf

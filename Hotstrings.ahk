@@ -1,10 +1,4 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-
-
-; MATH STUFF
+﻿; MATH STUFF
 
 ; O means it doesn't add a space after completing
 :O:;e::∃
@@ -39,6 +33,19 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ::;ahk::AutoHotKey
 ::;shrug::¯\_(ツ)_/¯ 
 
+; DATE FUNCTIONS
+
+:R:;date:: 
+{
+    Send(FormatTime(,"M/d/yyyy"))
+}
+
+:R:;iso:: 
+{
+    Send(FormatTime(,"yyyy-MM-dd"))
+}
+
+
 ; AUTOGEN
 
 :R:;ESE::Empirical Software Engineering
@@ -57,3 +64,4 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 :R:;congruent::≅
 :R:;neg::¬
 :R:;range::Range(f) == {f[x] : x \in DOMAIN f}`r
+
