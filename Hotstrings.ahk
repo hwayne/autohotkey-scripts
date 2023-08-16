@@ -1,4 +1,8 @@
-﻿; MATH STUFF
+﻿; All my hotstrings start with a ; so that I unintentionally trigger any of them
+; eg `::e::foo` --> triggers if I type ` e `, can easily happen by accident
+; `::;e::` triggers if I type ` ;e `, never happens in day-to-day programming
+
+; MATH STUFF
 
 ; O means it doesn't add a space after completing
 :O:;e::∃
