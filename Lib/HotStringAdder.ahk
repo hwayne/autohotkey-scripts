@@ -25,13 +25,13 @@ A_Clipboard := ClipboardOld  ; Restore previous contents of clipboard.
 
 
 ; Show the InputBox, providing the default HotString:
-cmd := InputBox("Insert HotString for " . hs)
+cmd := InputBox("Insert HotString for " . hs, ,,";")
 if cmd.Result != "OK" {
     return
 }
+; Otherwise, add the hotstring and reload the script:
 
 to_write := Format(":R:{1}::{2}", cmd.Value, hs)
-; Otherwise, add the hotstring and reload the script:
 hotstring_file := A_WorkingDir . "\HotStrings.ahk"
 FileAppend "`n" . to_write, hotstring_file
 Reload

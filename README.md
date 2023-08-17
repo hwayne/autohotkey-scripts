@@ -1,10 +1,9 @@
 # autohotkey-scripts
 
-Authotkey description
 
-Some of my AutoHotKey scripts, since people keep asking. I removed some personal scripts, like a hotstring that prints my address. Then I added comments to *everything* so that you can understand what's going on.
+Interested in [AutoHotKey]() but don't know where to start? This is a collection of scripts I use every day, annotated with plenty of comments so you can understand how it all works! 
 
-Disclaimer: most of these scripts are pretty jank. There's no incentives to clean things up when I'm the only developer *and* user. Your AHK should be the same way. Embrace the jank.
+Disclaimer: many of these scripts are pretty jank. There's no incentives to clean things up when I'm the only developer *and* user. Don't feel like your AHK needs to be pristine. Embrace the jank.
 
 ## How to use
 
@@ -28,11 +27,9 @@ As this is adapted from my personal scripts, which I've steadily developed over 
 Several of the files showcase different topics in AHK. Among them:
 
 * Input hooks, extensible hotkeys: FolderMode
-* Window Groups: WindowSwitcher
-* Using external programs: Clipimage, Timer
-* GUIs: TK
-* Objects, writing to files: Researcher
+* Window Groups: WindowSwitching.ahk
+* Using external programs: Timezone.ahk
+* GUIs, reading files: GUI.ahk
+* Objects, writing to files: Researcher.ahk
 
 Some of the files
-
-**THIS IS V1, NOT V2.** I've migrated all my personal scripts to v2 (it's way better) but haven't updated this repo yet. Doing the work in another branch.

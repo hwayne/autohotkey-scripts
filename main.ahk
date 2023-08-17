@@ -9,31 +9,32 @@ SetTitleMatchMode "RegEx"
 
 
 #Include Hotstrings.ahk ; Replace what you type with something else.
+#Include <HotStringAdder> ; Easily add new hotstrings
 
-; NEWB CUTOFF
+; ~~~~~ NEWB CUTOFF ~~~~~
 ; If you copy just the above stuff and the hotstrings.ahk file, you'll have enough to get started with AHK.
 
 
-#Include <HotStringAdder> ; Easily add new hotstrings
 #Include <SpecificPrograms/FirefoxStuff> ; Special commands for just firefox.
-
 #Include <ModesModal> ; Add ahk modes (a la vim) to your whole computing experience
 #Include <CharScripts> ; subscripts and superscripts
 #Include <Launchers/Folders> ; Open specific folders from anywhere with just your keyboard
 #Include <Launchers/AHKFiles> ; Ditto, but for AHK files
-#Include <WindowSwitching> ; Switch to specific windows with just your keyboard
+#Include <WindowSwitching> ; Switch to specific windows with the keyboard
 
-
-; Some notes on hotkey modifier symbols
-; # = Winkey
-; + = shift
-;   (hotkeys are otherwise case insensitive, c:: = C:: ≠ +c::
-; ^ = ctrl
-; ! = alt
-; > = RIGHT modifier. >^c is "right ctrl + c"
-;   good for not accidentally overriding builtin chords
+/*
+Some notes on hotkey modifier symbols
+# = Winkey
++ = shift
+  (hotkeys are otherwise case insensitive, c:: = C:: ≠ +c::
+^ = ctrl
+! = alt
+> = RIGHT modifier. >^c is "right ctrl + c"
+  good for not accidentally overriding builtin chords
+*/
 
 ; MAIN.AHK HOTKEYS BELOW HERE
+
 ; I like to put impromptu hotkeys in main, and then if they start coalescing around a theme
 ; (like firefox hotkeys), I create a separate imported file for them.
 
@@ -68,7 +69,7 @@ Research := Researcher()
 
  
 ; These hotkeys are only active if the condition is true
-; In this case, we're in "workshop mode"
+; In this case, we're in "workshop mode". See ModesModal.ahk
 #HotIf (g_mode = "workshop")
   ; I love using wheelleft and wheelright for hotkeys because almost no Software
   ; uses them, so they're "free"
@@ -87,7 +88,7 @@ Research := Researcher()
 {
   Tooltip(FormatTime(,"MM/dd hh:mm tt"))
   ; Tooltip() closes any existing tooltip
-  ; READ MORE: {toolip}
+  ; READ MORE: https://www.autohotkey.com/docs/v2/lib/ToolTip.htm
   SetTimer(() => ToolTip(), -700) ;-700 = in 700 ms, run ONCE
 }
 
@@ -97,7 +98,7 @@ Research := Researcher()
 {
   TimeString := FormatTime(,"MM/dd hh:mm tt")
   ; Inputboxes let you get text input from user.
-  ; READ MORE: {Inputbox}
+  ; READ MORE: https://www.autohotkey.com/docs/v2/lib/InputBox.htm
   t_msg := InputBox(,TimeString,"w200 h100")
   if t_msg.Result = "OK" {
     timestampfile := A_WorkingDir . "\Config\timestamps.txt"
@@ -118,7 +119,7 @@ Tab::Send "{Space}{Space}"
   A_clipboard := ""
   Send "^c"
   ClipWait 2
-  Run(Format("notepad.exe `"{1}`"", A_clipboard)) ; This doesn't handle spaces in filenames and I don't yet know why 
+  Run(Format("notepad.exe `"{1}`"", A_clipboard)) ; This doesn't handle spaces in filenames and I haven't yet looked into why
 }
 
 #HotIf
