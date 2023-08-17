@@ -1,9 +1,11 @@
-﻿; All my hotstrings start with a ; so that I unintentionally trigger any of them
+﻿; Hotstrings are text that's replaced when you type them. I use a lot of them, they're super handy.
+; READ MORE: https://www.autohotkey.com/docs/v2/Hotstrings.htm
+
+; All my hotstrings start with a ; so that I unintentionally trigger any of them
 ; eg `::e::foo` --> triggers if I type ` e `, can easily happen by accident
 ; `::;e::` triggers if I type ` ;e `, never happens in day-to-day programming
 
 ; MATH STUFF
-
 ; O means it doesn't add a space after completing
 :O:;e::∃
 :O:;a::∀
@@ -32,13 +34,8 @@
 ::;pi::π
 ::;mapsto::↦
 
-; MISC STUFF
-
-::;ahk::AutoHotKey
-::;shrug::¯\_(ツ)_/¯ 
-
 ; DATE FUNCTIONS
-
+; Hotstrings can also trigger functions!
 :R:;date:: 
 {
     Send(FormatTime(,"M/d/yyyy"))
@@ -49,23 +46,15 @@
     Send(FormatTime(,"yyyy-MM-dd"))
 }
 
+; MISC STUFF
+
+::;ahk::AutoHotKey
+::;shrug::¯\_(ツ)_/¯ 
+:R:;mdshrug::¯\\\_(ツ)\_/¯
+:R:;zoom::https://myzoomlink.zoom.us/
+::;adr::My address (street and apt num)
+::;fadr::Full address (street, city, state, zip)
 
 ; AUTOGEN
-
-:R:;ESE::Empirical Software Engineering
-:R:;lq::« 
-:R:;rq::»
-:R:;pm::±
-:R:;deg::°
-:R:;zed::ℤ
-:R:;notin::∉
-:R:;mapsto::↦
-:R:;lam::λ
-:R:;to::→
-:R:;alpha::α
-:R:;tau::τ
-:R:;mdshrug::¯\\\_(ツ)\_/¯
-:R:;congruent::≅
-:R:;neg::¬
-:R:;range::Range(f) == {f[x] : x \in DOMAIN f}`r
+; Anything added by the HotStringAdder.ahk will go below here.
 

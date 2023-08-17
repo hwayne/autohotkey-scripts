@@ -5,6 +5,9 @@
 ; We abuse this to use the g_mode global as a mode indicator.
 ; I use this a lot less than I used to, but it's still nice for things like superscripts
 
+; globals are ok if you're not sharing the file with anyone else
+g_mode := ""
+
 set_mode(new_mode) {
 	global g_mode
 	if (g_mode == new_mode) {
