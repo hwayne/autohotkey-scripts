@@ -1,217 +1,123 @@
 ﻿
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Warn  ; Enable warnings to assist with detecting common errors.
 #SingleInstance Force ; No others
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-;SetMouseDelay, 100
-SetKeyDelay, 40
-SetTitleMatchMode RegEx
+#Requires AutoHotkey >=2.0
+SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
+SetKeyDelay 40 ; not actually used except when using SendRaw/Event
+SetMouseDelay 40
+SetTitleMatchMode "RegEx"
 
-; Since AHK doesn't have modules, classes are a good way to contain state.
-#Include <Researcher>
-Research := new Researcher()
+#Include Hotstrings.ahk ; Replace what you type with something else.
 
-#Include <ClipImageSaver>
-ClipImageSave := new ClipImageSaver()
+; ~~~~~ NEWB CUTOFF ~~~~~
+; If you copy just the above stuff and the hotstrings.ahk file, you'll have enough to get started with AHK.
 
-#Include <FileCloner>
-FileClone := new FileCloner()
+#Include <HotStringAdder> ; Easily add new hotstrings
+#Include <SpecificPrograms/FirefoxStuff> ; Special commands for just firefox.
+#Include <ModesModal> ; Add ahk modes (a la vim) to your whole computing experience
+#Include <CharScripts> ; subscripts and superscripts
+#Include <Launchers/Folders> ; Open specific folders from anywhere with just your keyboard
+#Include <Launchers/AHKFiles> ; Ditto, but for AHK files
+#Include <WindowSwitching> ; Switch to specific windows with the keyboard
 
-; You can use the WindowSpy script to get the names and classes of programs
-; WindowSpy comes with AutoHotKey
-GroupAdd, mail, ahk_exe thunderbird.exe
-GroupAdd, hh, ahk_exe hh.exe
-GroupAdd, firefox, ahk_exe firefox.exe 
-GroupAdd, files, ahk_class CabinetWClass
-GroupAdd, zoom, ahk_exe Zoom.exe
-GroupAdd, alloy, ahk_class SunAwtFrame ; poor subsitute but works
+/*
+Some notes on hotkey modifier symbols
+# = Winkey
++ = shift
+  (hotkeys are otherwise case insensitive, c:: = C:: ≠ +c::
+^ = ctrl
+! = alt
+> = RIGHT modifier. >^c is "right ctrl + c"
+  good for not accidentally overriding builtin chords
+*/
 
-GroupAdd, editors, ahk_exe Code.exe
-GroupAdd, editors, ahk_exe nvim-qt.exe
+; MAIN.AHK HOTKEYS BELOW HERE
 
-GroupAdd, terminal, ahk_exe WindowsTerminal.exe
-GroupAdd, terminal, ahk_exe powershell.exe
-GroupAdd, terminal, ahk_exe powershell_ise.exe
-
-GroupAdd, slides, ahk_class AcrobatSDIWindow
-GroupAdd, slides, ahk_exe POWERPNT.EXE
-
-GroupAdd, workshop, ahk_exe firefox.exe 
-GroupAdd, workshop, ahk_class AcrobatSDIWindow
-GroupAdd, workshop, ahk_class SunAwtFrame ; poor subsitute but works
-GroupAdd, workshop, TLA\+ Toolbox
-
-; Yay globals
-g_mode := ""
-
-
-Return ; END OF HEADERS
-
-#Include Hotstrings.ahk
-#Include <HotStringAdder>
-#Include <FirefoxStuff>
-
-#Include <ModesModal>
-#Include <CharScripts>
-#Include <FileMode>
-
-; Some notes on hotkey modifier symbols
-; # = Winkey
-; + = shift
-;   (hotkeys are otherwise case insensitive, c:: = C:: ≠ +c::
-; ^ = ctrl
-; ! = alt
-; > = RIGHT modifier. >^c is "right ctrl + c"
-;   good for not accidentally overriding builtin chords
+; I like to put impromptu hotkeys in main, and then if they start coalescing around a theme
+; (like firefox hotkeys), I create a separate imported file for them.
 
 ; !!! IMPORTANT !!!
 ; These let you update and reload your config on the fly
-; They are super, SUPER IMPORTANT
+; They are super, SUPER USEFUL
 ; (They also only work if you're running an .ahk file, not a compiled .exe)
 #!.::Reload
 #!,::Edit
 
 ; Format copy as markdown link
 ; Unfortunately there's no way to get selected text without copying it to the clipboard
-#!c::
-	ctmp := clipboard
-	clipboard := ""
-	Send ^c
-	ClipWait, 2
-	clipboard := "[" . clipboard . "](" . ctmp . ")"
-Return
-
-; Same as above, but use title too
-; (I don't ever use this one)
->^>!c::
-	clipboard := ""
-	Send ^c
-	ClipWait, 2
-	ctmp := clipboard
-	Send ^l
-	Sleep, 400
-	clipboard := ""
-
-	Send ^c
-	ClipWait, 2
-	clipboard := "[" . ctmp . "](" . clipboard . ")"
-Return
-
-
-
-
-
-
-; For things that are unique
-toggle_app(app, location) 
-{
-	if WinExist(app)   
-	{
-		
-		if !WinActive(app)
-		{
-			WinActivate
-		}
-        else
-		{
-			WinMinimize
-		}
-	}
-	else if location != ""
-	{
-		Run, %location%
-	}
+#!c:: {
+  ctmp := A_clipboard ; Save what's on the clipboard for later formatting
+  A_clipboard := ""
+  Send "^c"
+  ClipWait 2 ; Wait until there's non-empty data on the clipboard
+  A_clipboard := "[" . A_clipboard . "](" . ctmp . ")"
 }
 
-#Include <LauncherMode>
+; Since AHK doesn't have modules, classes are a good way to contain state.
+#Include <Researcher>
+Research := Researcher()
 
-#=::Research.SetNoteType()
-#+::Research.AddNote()
-#D::Research.JotNote()
-#?::Research.OpenNotes()
-
-
-; TODO make this its own file/function/whatever
-NumpadClear::
-	researchmap := {t: "therapy", d: "diary", l: "learn", r: "recs", m: "memo", s: "slush"}
-  ; Input is INCREDIBLY useful for making key combinations, like if you want
-  ; `a THEN b` to trigger a hotkey
-	Input, NewNoteType, L1 T1,, t,d,r,l,m,s
-	if (ErrorLevel = "Match") {
-		tmp_x := researchmap[NewNoteType]
-		Research.SetTo(tmp_x)
-		TrayTip,, Note type: %tmp_x%, 20, 17
-		SetTimer, RemoveTrayTip, -700
-	}
-return
+; These are win+ctrl+key, but the RIGHT ctrl, so won't conflict.
+; My own setup just uses win+key, which is a bad habit and you shouldn't do it.
+#>^=::Research.SetNoteType()
+#>^+::Research.AddNote()
+#>^d::Research.JotNote()
+#>^?::Research.OpenNotes()
 
 
-#>^s::ClipImageSave.SaveClip()
-#>^+s::ClipImageSave.FastSaveClip()
-
-
-; This has to be a .lnk file because spotify is an app, not an .exe. It's weird.
->!s::toggle_app("ahk_exe Spotify.exe", "D:\Software\AutoHotKey\Lib\Spotify.lnk")
-
->!1:: GroupActivate, firefox, R
->!t:: toggle_app("TLA\+ Toolbox", "")
->!2:: GroupActivate, editors, R
-
->!e:: GroupActivate, mail, R
->!h:: GroupActivate, hh, R
->!p:: GroupActivate, slides, R
->!f:: GroupActivate, files, R
->!x:: GroupActivate, terminal, R
->!c:: GroupActivate, editors, R
->!z:: GroupActivate, zoom, R
->!a:: GroupActivate, alloy, R
->!.:: GroupActivate, workshop, R
  
-#If (g_mode = "workshop") 
-	F1:: GroupActivate, workshop, R
-	F2:: GroupActivate, zoom, R
-	
-	F4:: FileClone.Clone()
-#If
+; These hotkeys are only active if the condition is true
+; In this case, we're in "workshop mode". See ModesModal.ahk
+#HotIf (g_mode = "workshop")
+  ; I love using wheelleft and wheelright for hotkeys because almost no Software
+  ; uses them, so they're "free"
+  WheelLeft:: GroupActivate("editors", "R")
+  WheelRight:: GroupActivate("zoom", "R")
+#HotIf
 
+; Make sure to read Timezone.ahk to understand how this works.
+#Include <Timezone>
+#`::get_timezone()
+
+
+; Makes a tooltip with the current time.
+; >^>+d --> right-ctrl + right-shift + d 
 >^>+d::
-FormatTime, TimeString,, MM/dd hh:mm tt
-;TrayTip ,, %TimeString%, 1, ; too long
-Tooltip %TimeString%
-SetTimer, RemoveToolTip, -700
-return
-
-RemoveToolTip:
-ToolTip
-return
-
-RemoveTrayTip:
-TrayTip
-return
+{
+  Tooltip(FormatTime(,"MM/dd hh:mm tt"))
+  ; Tooltip() closes any existing tooltip
+  ; READ MORE: https://www.autohotkey.com/docs/v2/lib/ToolTip.htm
+  SetTimer(() => ToolTip(), -700) ;-700 = in 700 ms, run ONCE
+}
 
 
 ; Timestamp tracking
 >^d::
-FormatTime, TimeString,, MM/dd hh:mm tt
-InputBox, t_msg, Timestamp,,,200,100,,,,,
-if !ErrorLevel { ;ErrorLevel is 0 if ok, nonzero if cancel
-	timestampfile := A_WorkingDir . "\Config\timestamps.txt"
-	FileAppend, %TimeString%	%t_msg%`r`n, %timestampfile%
+{
+  TimeString := FormatTime(,"MM/dd hh:mm tt")
+  ; Inputboxes let you get text input from user.
+  ; READ MORE: https://www.autohotkey.com/docs/v2/lib/InputBox.htm
+  t_msg := InputBox(,TimeString,"w200 h100")
+  if t_msg.Result = "OK" {
+    timestampfile := A_WorkingDir . "\Config\timestamps.txt"
+    FileAppend(TimeString . "`t" . t_msg.Value . "`r`n", timestampfile)
+  }
 }
-return
 
-; Alloy proper tab
-#IfWinActive, Alloy Analyzer 5.1.0
-Tab::Send {Space}{Space}
+; The Alloy Analyzer is a homebrew IDE without a "tabs to spaces" option.
+; This is a hack to make the tab key send spaces. 
+#HotIf WinActive("Alloy Analyzer 6.1.0")
+Tab::Send "{Space}{Space}"
+
+; We don't need a closing #HotIf because the following #HotIf automagically ends the old one
 
 ; Open current selected file in notepad
-#IfWinActive, ahk_class CabinetWClass
->!o::
-	clipboard := ""
-	Send ^c
-	ClipWait, 2
-	Run, notepad.exe `"%clipboard%`"
-	return
-#IfWinActive
+#HotIf WinActive("ahk_class CabinetWClass") ; Explorer window, gotten with window spy
+>!o::{
+  A_clipboard := ""
+  Send "^c"
+  ClipWait 2
+  Run(Format("notepad.exe `"{1}`"", A_clipboard)) ; This doesn't handle spaces in filenames and I haven't yet looked into why
+}
 
+#HotIf

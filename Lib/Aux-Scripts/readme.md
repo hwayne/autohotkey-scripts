@@ -1,1 +1,1 @@
-For when you need AutoHotKey to shell out to another program written in a saner language
+For when you need AutoHotKey to shell out to another program written in another language

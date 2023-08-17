@@ -1,20 +1,15 @@
 ; Saves notes and bits of clipboard to a file.
+; Also a demo of how to write classes in AHK!
 
 class Researcher 
 {
-    NoteType := 0
+    NoteType := "0"
 
     SetNoteType()
     {
-        ; We have to save to tmp because InputBox variable interpolation doesn't accept dots
-        tmp := this.NoteType
-        
-        InputBox, tmp, Researcher,Your current note type is "%tmp%",,,,,,,, %tmp%
-        this.NoteType := tmp
-
+        this.NoteType := InputBox(Format("Your current note type is {1}", this.NoteType), "Research").Value
     }
 
-    ; I added this well after the rest of Researcher, should make SetNoteType use it lol
     SetTo(val)
     {
         this.NoteType := val
@@ -22,35 +17,33 @@ class Researcher
     
     AddNote()
     {
-        tmp := this.NoteFile()
-        FileAppend, %clipboard%`r`n, %tmp%
+        FileAppend("`r`n" . A_clipboard, this.NoteFile())
     }
 
     JotNote()
-    {
-        tmp := this.NoteType
-        
-        InputBox, msg, Jot Note, Jot note for type "%tmp%",,,,,,,,
-        file := this.NoteFile()
-        FileAppend, %msg%`r`n, %file%
+    {        
+        msg := InputBox(Format("Jot note for {1}", this.NoteType), "Research").Value
+        FileAppend("`r`n" . A_clipboard, this.NoteFile())
 
     }
 
     OpenNotes()
     {
-        ifWinExist, ahk_exe notepad.exe
+        tmp := this.NoteType . ".txt - Notepad"
+        if(WinExist(tmp)) {
             WinKill
-        else
-            ifExist % this.NoteFile()
-                Run % this.NoteFile()
+        }
+        else {
+            if(FileExist(this.NoteFile()))
+                Run this.NoteFile()
+        }
     }
 
     NoteFile()
     {
-		
-                return (A_WorkingDir . "\Config\Notes\" . this.NoteType . ".txt")    
+		; TODO make this able to have different note directories
+        return (A_WorkingDir . "\Config\Notes\" . this.NoteType . ".txt")    
     }
 }
 
-; Lowercase
-;=::TrayTip, "hello", "world"
+Research := Researcher()
