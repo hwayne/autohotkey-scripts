@@ -30,7 +30,7 @@ set_mode(new_mode) {
 ; Kinda annoying when I'm on a laptop, though; I use a USB wireless numpad.
 
 ; Workshop mode is when I teach TLA+ workshops: it makes tapping the scrollwheel left-right switch to various windows
-; TODO explain checkpoint launcher
+
 
 NumpadDel::set_mode("workshop")
 

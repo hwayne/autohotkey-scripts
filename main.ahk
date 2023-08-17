@@ -7,14 +7,12 @@ SetKeyDelay 40 ; not actually used except when using SendRaw/Event
 SetMouseDelay 40
 SetTitleMatchMode "RegEx"
 
-
 #Include Hotstrings.ahk ; Replace what you type with something else.
-#Include <HotStringAdder> ; Easily add new hotstrings
 
 ; ~~~~~ NEWB CUTOFF ~~~~~
 ; If you copy just the above stuff and the hotstrings.ahk file, you'll have enough to get started with AHK.
 
-
+#Include <HotStringAdder> ; Easily add new hotstrings
 #Include <SpecificPrograms/FirefoxStuff> ; Special commands for just firefox.
 #Include <ModesModal> ; Add ahk modes (a la vim) to your whole computing experience
 #Include <CharScripts> ; subscripts and superscripts
