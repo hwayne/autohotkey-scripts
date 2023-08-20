@@ -11,6 +11,10 @@ Everything is called from `main`. If you're completely new to AHK, you can just 
 
 Otherwise, feel free to download the entire thing, or scavenge just the parts that seem useful to you.
 
+### Installing AHK
+
+If you have winget, you can do `winget install autohotkey.autohotkey`. Otherwise you can download it from [the site](https://www.autohotkey.com/). **Make sure you download v2.0**. These scripts won't work in v1!
+
 ## General Design Notes
 
 ~~Almost all~~ *Many* of the hotkeys are designed to conflict minimally with the systems hotkeys. Some ways of achieving this: 
@@ -26,10 +30,10 @@ As this is adapted from my personal scripts, which I've steadily developed over 
 
 Several of the files showcase different topics in AHK. Among them:
 
-* Input hooks, extensible hotkeys: FolderMode
+* Input hooks, extensible hotkeys: FolderMode.ahk
 * Window Groups: WindowSwitching.ahk
 * Using external programs: Timezone.ahk
 * GUIs, reading files: GUI.ahk
 * Objects, writing to files: Researcher.ahk
 
-Some of the files
+When the same topic (like `#HotIf`) appears in multiple files, I erred on the side of redundant information.
