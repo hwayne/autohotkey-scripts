@@ -7,35 +7,29 @@
 
 ; MATH STUFF
 ; O means it doesn't add a space after completing
+
 :O:;e::∃
 :O:;a::∀
 ::;in::∈
-::;cup::∪
-::;cap::∩
-::;subset::⊆
-:O:;sq::□
-:O:;circ::◯
-:O:;diamond::◇
-::;and::⋀
-::;or::⋁
-::;dar::⇒
-::;implies::⇒
-:O:;not::¬
-::;infty::∞
-::;iff::⇔
-::;equiv::≡
-::;approx::≈
-::;neq::≠ 
+::;neq::≠
 ::;leq::≤
 ::;geq::≥
 :O:;nat::ℕ
 :O:;int::ℤ
 :O:;real::ℝ
 ::;pi::π
-::;mapsto::↦
+
+; Text stuff
+; R means it won't parse {Space} as ' ' or `r as a newline
+;  (probably unneeded but I like the peace of mind)
+:RO:;en::–
+:RO:;em::—
+:R:;ddd::…
+:RO:;terro::‽
 
 ; DATE FUNCTIONS
 ; Hotstrings can also trigger functions!
+; See `>^>+d` in main.ahk for explanation of FormatTime
 :R:;date:: 
 {
     Send(FormatTime(,"M/d/yyyy"))
@@ -52,8 +46,9 @@
 ::;shrug::¯\_(ツ)_/¯ 
 :R:;mdshrug::¯\\\_(ツ)\_/¯
 :R:;zoom::https://myzoomlink.zoom.us/
+
 ::;adr::My address (street and apt num)
-::;fadr::Full address (street, city, state, zip)
+::;fadr::Full address(street `r city, state, zip)
 
 ; AUTOGEN
 ; Anything added by the HotStringAdder.ahk will go below here.

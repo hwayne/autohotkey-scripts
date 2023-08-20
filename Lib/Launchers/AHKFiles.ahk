@@ -9,8 +9,8 @@ NumpadClear:: {
         ,   "f", launchers . "\Folders.ahk"
         ,   "c", lib . "\CharScripts.ahk"
     )
-    file_input := "?"
 
+    file_input := "?"
     file_out := ""
 
 

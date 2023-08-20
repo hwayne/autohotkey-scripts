@@ -1,5 +1,8 @@
-﻿; from https://www.autohotkey.com/docs/Hotstrings.htm#Helper, updated to v2 by me
-; looks like they updated it themselves too at https://www.autohotkey.com/docs/v2/lib/Hotstring.htm#ExHelper
+﻿/* 
+from https://www.autohotkey.com/docs/v1/Hotstrings.htm#Helper, updated to v2 by me. Since it's someone else's script, I mostly just left their comments.
+
+(looks like they updated it themselves too at https://www.autohotkey.com/docs/v2/lib/Hotstring.htm#ExHelper)
+*/
 
 >^h::  {
 ; Get the text currently selected. The clipboard is used instead of

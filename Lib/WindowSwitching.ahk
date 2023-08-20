@@ -6,7 +6,7 @@
 ; You can use the WindowSpy script to get the names and classes of programs
 ; WindowSpy comes with AutoHotKey
 
-GroupAdd("hh", "ahk_exe hh.exe ") ;ahk help
+GroupAdd("hh", "ahk_exe hh.exe ") ; ahk help program
 GroupAdd("firefox", "ahk_exe firefox.exe")
 
 ; If you add multiple queries to a group, all queries that match any will be used
@@ -27,7 +27,7 @@ GroupAdd("editors", "ahk_exe nvim-qt.exe")
 ; IE right-alt+1 switches through firefox windows.
 ; All of these use right-alt+char because consistency is cool
 
-; GroupActivate(name, "R") activates THE MOST RECENTLY ACTIVE window/
+; GroupActivate(name, "R") activates THE MOST RECENTLY ACTIVE window
 ; READ MORE: https://www.autohotkey.com/docs/v2/lib/GroupActivate.htm
 
 >!1:: GroupActivate("firefox", "R")
