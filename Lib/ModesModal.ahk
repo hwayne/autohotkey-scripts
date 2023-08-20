@@ -18,12 +18,13 @@ set_mode(new_mode) {
 	}
 	
 	if (g_mode == "") {
-		;TrayTip,, Normal Mode, 20, 17	
 		TrayTip("Normal Mode")
 	} else {
 		TrayTip(Format("Mode: {1}", g_mode))
 	}
-	SetTimer () => TrayTip(), -200
+	; Traytip() closes any existing traytip
+  ; READ MORE: https://www.autohotkey.com/docs/v2/lib/TrayTip.htm
+	SetTimer () => TrayTip(), -500 ; run fun after 500 ms, ONCE
 }
 
 ; I love using the numpad for hotkeys. Basically nothing REQUIRES the numpad, so it's free buttons!

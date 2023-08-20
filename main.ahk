@@ -1,13 +1,13 @@
 ﻿
 #Warn  ; Enable warnings to assist with detecting common errors.
-#SingleInstance Force ; No others
+#SingleInstance Force
 #Requires AutoHotkey >=2.0
 SetWorkingDir(A_ScriptDir)  ; Ensures a consistent starting directory.
 SetKeyDelay 40 ; not actually used except when using SendRaw/Event
 SetMouseDelay 40
 SetTitleMatchMode "RegEx"
 
-#Include Hotstrings.ahk ; Replace what you type with something else.
+#Include Hotstrings.ahk ; Replaces what you type with something else.
 
 ; ~~~~~ NEWB CUTOFF ~~~~~
 ; If you copy just the above stuff and the hotstrings.ahk file, you'll have enough to get started with AHK.
@@ -19,12 +19,13 @@ SetTitleMatchMode "RegEx"
 #Include <Launchers/Folders> ; Open specific folders from anywhere with just your keyboard
 #Include <Launchers/AHKFiles> ; Ditto, but for AHK files
 #Include <WindowSwitching> ; Switch to specific windows with the keyboard
+; Not #Included: <GUI>. That one's special.
 
 /*
 Some notes on hotkey modifier symbols
 # = Winkey
 + = shift
-  (hotkeys are otherwise case insensitive, c:: = C:: ≠ +c::
+  (hotkeys are otherwise lowercase, c:: = C:: ≠ +c::
 ^ = ctrl
 ! = alt
 > = RIGHT modifier. >^c is "right ctrl + c"
@@ -43,13 +44,21 @@ Some notes on hotkey modifier symbols
 #!.::Reload
 #!,::Edit
 
-; Format copy as markdown link
-; Unfortunately there's no way to get selected text without copying it to the clipboard
-#!c:: {
-  ctmp := A_clipboard ; Save what's on the clipboard for later formatting
+/* 
+"Copy as markdown link." If you have `link` on the clipboard and have selected `title`, it will set your clipboard to `[title](link)`.
+*/
+; #>!c --> win + right-alt + c
+; I use just `#!c` personally but that's a bad habit,
+; since it would override any Windows hotkeys
+#>!c:: {
+  ctmp := A_clipboard ; Save what's on the clipboard (A_clipboard) for later formatting.
+  ; In Windows clipboard copying is async.
+  ; ClipWait can detect if the clipboard is NON-EMPTY.
+  ; So to detect "we've copied" we have to empty the clipboard first.
   A_clipboard := ""
-  Send "^c"
-  ClipWait 2 ; Wait until there's non-empty data on the clipboard
+  Send "^c" ; Presses ctrl+C for you
+  ClipWait 5 ; Wait 5ms for clipboard data. See  https://www.autohotkey.com/docs/v2/lib/ClipWait.htm
+
   A_clipboard := "[" . A_clipboard . "](" . ctmp . ")"
 }
 
@@ -64,8 +73,6 @@ Research := Researcher()
 #>^d::Research.JotNote()
 #>^?::Research.OpenNotes()
 
-
- 
 ; These hotkeys are only active if the condition is true
 ; In this case, we're in "workshop mode". See ModesModal.ahk
 #HotIf (g_mode = "workshop")
@@ -84,7 +91,11 @@ Research := Researcher()
 ; >^>+d --> right-ctrl + right-shift + d 
 >^>+d::
 {
+  ; FormatTime takes (time to format, format string)
+  ; If you leave the first item off, it's the current time
+  ; READ MORE: https://www.autohotkey.com/docs/v2/lib/FormatTime.htm
   Tooltip(FormatTime(,"MM/dd hh:mm tt"))
+
   ; Tooltip() closes any existing tooltip
   ; READ MORE: https://www.autohotkey.com/docs/v2/lib/ToolTip.htm
   SetTimer(() => ToolTip(), -700) ;-700 = in 700 ms, run ONCE
@@ -100,7 +111,7 @@ Research := Researcher()
   t_msg := InputBox(,TimeString,"w200 h100")
   if t_msg.Result = "OK" {
     timestampfile := A_WorkingDir . "\Config\timestamps.txt"
-    FileAppend(TimeString . "`t" . t_msg.Value . "`r`n", timestampfile)
+    FileAppend(TimeString . "`t" . t_msg.Value . "`r`n", timestampfile) ;` is the escape character, `r`n is "newline".
   }
 }
 
