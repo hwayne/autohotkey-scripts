@@ -31,9 +31,9 @@ As this is adapted from my personal scripts, which I've steadily developed over 
 Several of the files showcase different topics in AHK. Among them:
 
 * Input hooks, extensible hotkeys: [Folders.ahk](/Lib/Launchers/Folders.ahk)
-* Window Groups: WindowSwitching.ahk
-* Using external programs: Timezone.ahk
-* GUIs, reading files: GUI.ahk
-* Objects, writing to files: Researcher.ahk
+* Window Groups: [WindowSwitching.ahk](/Lib/WindowSwitching.ahk)
+* Using external programs: [Timezone.ahk](/Lib/Timezone.ahk)
+* GUIs, reading files: [GUI.ahk](/Lib/GUI.ahk)
+* Objects, writing to files: [Researcher.ahk](/Lib/Researcher.ahk)
 
 When the same topic (like `#HotIf`) appears in multiple files, I erred on the side of redundant information.
