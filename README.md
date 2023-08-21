@@ -30,7 +30,7 @@ As this is adapted from my personal scripts, which I've steadily developed over 
 
 Several of the files showcase different topics in AHK. Among them:
 
-* Input hooks, extensible hotkeys: FolderMode.ahk
+* Input hooks, extensible hotkeys: [Folders.ahk](/Lib/Launchers/Folders.ahk)
 * Window Groups: WindowSwitching.ahk
 * Using external programs: Timezone.ahk
 * GUIs, reading files: GUI.ahk
